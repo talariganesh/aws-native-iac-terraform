@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      terraform: 1.1.4
+  build:
+    commands:
+      - terraform init
+      - terraform plan -out=tfplan
+  post_build:
+    commands:
+      - |
+        if [ "${CODEBUILD_BUILD_SUCCEEDING}" == "1" ]; then
+          terraform apply tfplan
+        else
+          echo "Build failed"
+        fi
